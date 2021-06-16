@@ -62,7 +62,7 @@ def getPixelsPerMetric(image):
 
 
 def main():
-    img = cv2.imread('images/e16a.jpg')
+    img = cv2.imread('images/e10a.jpg')
 
     pixelsPerMetric = getPixelsPerMetric(img);
 
@@ -88,23 +88,8 @@ def main():
             if classNames[classId - 1] == "bottle":
                 x, y, w, h = box[0], box[1], box[2], box[3]
 
-                box1 = np.array([np.array([x, y]), np.array([x+w, y]), np.array([x+w, h+y]), np.array([x, h+y])])
-                box1 = np.array(box1, dtype="int")
-
-                print(box1)
-
-                (tl, tr, br, bl) = box1
-                (tltrX, tltrY) = midpoint(tl, tr)
-                (blbrX, blbrY) = midpoint(bl, br)
-
-                (tlblX, tlblY) = midpoint(tl, bl)
-                (trbrX, trbrY) = midpoint(tr, br)
-
-                dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
-                dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
-
-                dimA = dA / pixelsPerMetric
-                dimB = dB / pixelsPerMetric
+                dimA = h / pixelsPerMetric
+                dimB = w / pixelsPerMetric
 
                 colorRed = (0, 0, 255)
                 colorGreen = (0, 255, 0)
@@ -124,10 +109,10 @@ def main():
                 cv2.putText(img, classNames[classId - 1].upper(), (box[0] + 10, box[1] + 30), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
 
                 cv2.putText(img, "{:.1f}mm".format(dimB),
-                            (int(tltrX - 15), int(tltrY - 10)), cv2.FONT_HERSHEY_SIMPLEX,
+                            (int(x + w/2), int(y - 10)), cv2.FONT_HERSHEY_SIMPLEX,
                             0.65, colorTextB, 2)
                 cv2.putText(img, "{:.1f}mm".format(dimA),
-                            (int(trbrX + 10), int(trbrY)), cv2.FONT_HERSHEY_SIMPLEX,
+                            (int(x + w + 10), int(y + h/2)), cv2.FONT_HERSHEY_SIMPLEX,
                             0.65, colorTextA, 2)
 
             cv2.imshow("out", img)
